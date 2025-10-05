@@ -20,15 +20,30 @@ export const getCountOfAttendee = async (req,res) => {
 
 export const addNewGroup = async(req,res) => {
     const eventid = req.params.id;
-    const groupname = req.params.groupname;
+    const groupname = req.body.groupname;
     const newgroupid = await Admin.addNewGroup(eventid,groupname);
     res.json({success:true,message:"group added"});
 };
 
 export const addNewChildGroup = async (req,res) =>{
+    const childGroupData = req.body;
     const eventid = req.params.id;
-    const groupname = req.params.groupname;
-    const parentgroupid = req.params.parentgroupid;
-    const newgroupid = await Admin.addNewChildGroup(eventid,parentgroupid,groupname);
+    const newgroupid = await Admin.addNewChildGroup(eventid,childGroupData.parentgroupid,childGroupData.groupname);
     res.json({success:true,message:"New child group added"});
+}
+
+export const newEvent = async (req,res) => {
+    const eventData = req.body;
+
+    const eventCreated = await Admin.addNewEvent(eventData);
+    res.json({success:true,eventCreated});
+}
+
+export const getAttendeeByGroup = async (req,res) => {
+    const eventid = req.params.id;
+    const groupid = req.params.groupid;
+
+    const attendeeList = await Admin.getAttendeeByGroup(eventid,groupid);
+    res.json({success:true,attendeeList});
+
 }

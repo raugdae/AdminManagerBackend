@@ -45,7 +45,23 @@ class Admin {
         return result;
 
     }
+
+    static async addNewEvent(eventData){
+        const result = await pool.query(`
+            INSERT INTO tevent (event_name,start_date,end_date,street_name,street_number,zip,city,active) VALUES ($1,$2,$3,$4,$5,$6,$7,true) RETURNING id,event_name`,[eventData.eventName,eventData.startDate,eventData.endDate,eventData.streetName,eventData.streetNumber,eventData.zip,eventData.city]);
+            return result;
+    }
     
+    static async getAttendeeByGroup(eventid,groupid){
+        const result = await pool.query(`
+            SELECT tperson.lastname,tperson.firstname FROM tattendee
+            LEFT JOIN tperson ON tattendee.fk_personid = tperson.id
+            LEFT JOIN tgroup ON tattendee.fk_groupid = tgroup.id
+            LEFT JOIN tevent ON tgroup.fk_eventid = tevent.id
+            WHERE tevent.id = $1 AND tgroup.id = $2`,[eventid,groupid]);
+
+            return result.rows;
+    }
     
 }
 
