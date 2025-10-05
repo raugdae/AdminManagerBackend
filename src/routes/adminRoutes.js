@@ -9,15 +9,20 @@ router.use(authorizeRole('admin'));
 
 
 router.get('/allEvent',adminController.getAllEvents);
-router.get('/event/:id/attendees',adminController.getAllAttendeeFromEvent);
-router.get('/event/:id/countAttendees',adminController.getCountOfAttendee);
-router.get('/event/:id/getAttendeeByGroup/:groupid',adminController.getAttendeeByGroup);
-
-
-
+router.get('/event/:eventid/attendees',adminController.getAllAttendeeFromEvent);
+router.get('/event/:eventid/countAttendees',adminController.getCountOfAttendee);
+router.get('/event/:eventid/getAttendeeByGroup/:groupid',adminController.getAttendeeByGroup);
+router.get('/person/getAllPerson',adminController.getAllPerson);
+router.get('/data/getAllergenList',adminController.getAllergenList);
+router.get('/person/:personid/getPersonAllergens',adminController.getPersonAllergens); 
 
 router.post('/event/newEvent',adminController.newEvent);
-router.post('/event/:id/addgroup',adminController.addNewGroup);
-router.post('/event/:id/addChildGroup/',adminController.addNewChildGroup);
+router.post('/event/:eventid/addgroup',adminController.addNewGroup);
+router.post('/event/:eventid/addChildGroup/',adminController.addNewChildGroup);
+router.post('/group/addUser',adminController.addAttendeeToGroup);
+router.post('/person/addPerson',adminController.addPerson);
+router.post('/person/:personid/addAllergen',adminController.addAllergenToPerson);
+
+router.patch('/person/:personid/updateProfile',adminController.updatePersonData);
 
 export default router;

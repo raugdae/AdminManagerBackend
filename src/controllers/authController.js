@@ -16,8 +16,8 @@ const generateToken = (user) =>{
 
 export const register = async(req,res) =>{
     try{
-        const {email,password,role} = req.body;
-        console.log(req.body);
+        const {email,password,role='user'} = req.body;
+
 
         if (!email || !password){
             return res.status(400).json({
@@ -74,7 +74,6 @@ export const login = async(req,res) =>{
     if (!isPasswordValid){
         return res.status(401).json({success:false,message:'Wrong credentials'});
     }
-    console.log("USER : ",user);
     const token = generateToken(user);
 
     console.log('Token : ', jwt.verify(token, process.env.JWT_SECRET));

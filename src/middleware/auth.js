@@ -7,7 +7,6 @@ export const authenticateToken = (req,res,next) => {
 
     const token = authHeader && authHeader.split(' ')[1];
 
-       console.log(token);
 
     if (!token) {
         return res.status(401).json({succes:false,message:'Missing token, access denied'});
