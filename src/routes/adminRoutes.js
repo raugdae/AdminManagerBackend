@@ -24,5 +24,7 @@ router.post('/person/addPerson',adminController.addPerson);
 router.post('/person/:personid/addAllergen',adminController.addAllergenToPerson);
 
 router.patch('/person/:personid/updateProfile',adminController.updatePersonData);
+router.patch('/person/:personid/updateAllergen',adminController.updatePersonAllergen);
+router.patch('/event/:eventid/updateInfomaniakTicketing',adminController.updateInfomaniakTicketing)
 
 export default router;
