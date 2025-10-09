@@ -84,10 +84,12 @@ class Admin {
     return result.rows;
   }
 
-  static async getAllTickets(eventid){
-    
-    const result = await pool.query(`
-        SELECT ticket_code FROM tshop WHERE fk_eventid = $1`,[eventid]);
+  static async getAllTickets(eventid) {
+    const result = await pool.query(
+      `
+        SELECT ticket_code FROM tshop WHERE fk_eventid = $1`,
+      [eventid]
+    );
 
     return result.rows;
   }
@@ -211,8 +213,9 @@ class Admin {
       throw error;
     }
   }
-  static async insertTicket (eventid,ticketData){
-    const result = await pool.query(`
+  static async insertTicket(eventid, ticketData) {
+    const result = await pool.query(
+      `
         INSERT INTO tshop 
         (ticket_code,
         amount_due,
@@ -227,21 +230,37 @@ class Admin {
         $4,
         $5,
         $6)
-        RETURNING id`,[ticketData.barcode,ticketData.amount,ticketData.payementstatus,ticketData.category,ticketData.ordernumber,eventid]);
+        RETURNING id`,
+      [
+        ticketData.barcode,
+        ticketData.amount,
+        ticketData.payementstatus,
+        ticketData.category,
+        ticketData.ordernumber,
+        eventid,
+      ]
+    );
 
     return result.rows[0];
   }
 
-  static async insertSurvey(shopid,surveyData){
-
+  static async insertSurvey(shopid, surveyData) {
     console.log(shopid.id);
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
         INSERT INTO tshopsurvey
         (field_name,
         field_type,
         field_value,
         fk_shopid ) VALUES (
-        $1,$2,$3,$4)`,[surveyData.fieldname,surveyData.fieldtype,surveyData.fieldvalue,shopid.id]);
+        $1,$2,$3,$4)`,
+      [
+        surveyData.fieldname,
+        surveyData.fieldtype,
+        surveyData.fieldvalue,
+        shopid.id,
+      ]
+    );
     return result.rows;
   }
 
@@ -285,36 +304,50 @@ class Admin {
     return result;
   }
 
-  static async updateTicket(ticketData){
-    const result = await pool.query(`
+  static async updateTicket(ticketData) {
+    const result = await pool.query(
+      `
         UPDATE tshop SET
         amount_due = $1,
         payement_state = $2,
         ticket_type = $3
         WHERE
-        ticket_code = $4 RETURNING id`,[ticketData.amount,ticketData.payementstatus,ticketData.category,ticketData.barcode]);
+        ticket_code = $4 RETURNING id`,
+      [
+        ticketData.amount,
+        ticketData.payementstatus,
+        ticketData.category,
+        ticketData.barcode,
+      ]
+    );
 
-        
-        return result.rows[0];
+    return result.rows[0];
   }
 
-  static async updateSurvey(shopID, surveyData){
-    await pool.query(`UPDATE tshopsurvey SET
+  static async updateSurvey(shopID, surveyData) {
+    await pool.query(
+      `UPDATE tshopsurvey SET
       field_value = $1
-      WHERE field_name = $2 AND field_type = $3 AND fk_shopid = $4`,[surveyData.fieldvalue,surveyData.fieldname,surveyData.fieldtype,shopID.id]);
+      WHERE field_name = $2 AND field_type = $3 AND fk_shopid = $4`,
+      [
+        surveyData.fieldvalue,
+        surveyData.fieldname,
+        surveyData.fieldtype,
+        shopID.id,
+      ]
+    );
   }
-
-  
-  
 
   //DELETERS
 
-  static async deletePersonAlergen (userid,allergenid){
-    const result = pool.query(`
-        DELETE FROM tperson_tallergen WHERE fk_personid=$1 AND fk_allergenid =$2`,[userid,allergenid]);
+  static async deletePersonAlergen(userid, allergenid) {
+    const result = pool.query(
+      `
+        DELETE FROM tperson_tallergen WHERE fk_personid=$1 AND fk_allergenid =$2`,
+      [userid, allergenid]
+    );
 
     return result;
   }
-
 }
 export default Admin;

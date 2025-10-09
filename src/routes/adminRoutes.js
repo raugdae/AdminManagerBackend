@@ -8,7 +8,7 @@ router.use(authenticateToken);
 router.use(authorizeRole('admin'));
 
 
-router.get('/allEvent',adminController.getAllEvents);
+router.get('/allEvents',adminController.getAllEvents);
 router.get('/event/:eventid/attendees',adminController.getAllAttendeeFromEvent);
 router.get('/event/:eventid/countAttendees',adminController.getCountOfAttendee);
 router.get('/event/:eventid/getAttendeeByGroup/:groupid',adminController.getAttendeeByGroup);
@@ -19,7 +19,7 @@ router.get('/person/:personid/getPersonAllergens',adminController.getPersonAller
 router.post('/event/newEvent',adminController.newEvent);
 router.post('/event/:eventid/addgroup',adminController.addNewGroup);
 router.post('/event/:eventid/addChildGroup/',adminController.addNewChildGroup);
-router.post('/group/addUser',adminController.addAttendeeToGroup);
+router.post('/group/addAttendee',adminController.addAttendeeToGroup);
 router.post('/person/addPerson',adminController.addPerson);
 router.post('/person/:personid/addAllergen',adminController.addAllergenToPerson);
 
