@@ -166,6 +166,8 @@ export const updatePersonAllergen = async (req, res) => {
   const personid = req.params.personid;
   const submittedAllergens = req.body.allergens;
 
+  console.log(req.body.allergens);
+
   const currentData = await Admin.getPersonAllergen(personid);
 
   console.log(submittedAllergens);
@@ -261,3 +263,11 @@ export const updateInfomaniakTicketing = async (req, res) => {
 };
 
 //DELETERS
+export const deletePersonAlergen = async (req,res) =>{
+  const userid = req.params.userid;
+  const allergenid = req.body.allergendid;
+
+  await Admin.deletePersonAlergen(userid,allergenid);
+
+  res.json({status:true,message:"Allergen removed"});
+}
