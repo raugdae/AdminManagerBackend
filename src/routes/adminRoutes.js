@@ -7,7 +7,11 @@ const router = express.Router();
 router.use(authenticateToken);
 router.use(authorizeRole('admin'));
 
+<<<<<<< HEAD
 //GET routes
+=======
+
+>>>>>>> a5f5d6152e79a06531e5ed9680e610ebf7c66190
 router.get('/allEvents',adminController.getAllEvents);
 router.get('/event/:eventid/attendees',adminController.getAllAttendeeFromEvent);
 router.get('/event/:eventid/countAttendees',adminController.getCountOfAttendee);
@@ -23,9 +27,13 @@ router.get('/data/getAllergenList',adminController.getAllergenList);
 router.post('/event/newEvent',adminController.newEvent);
 router.post('/event/:eventid/addgroup',adminController.addNewGroup);
 router.post('/event/:eventid/addChildGroup/',adminController.addNewChildGroup);
+<<<<<<< HEAD
 
 router.post('/group/addUser',adminController.addAttendeeToGroup);
 
+=======
+router.post('/group/addAttendee',adminController.addAttendeeToGroup);
+>>>>>>> a5f5d6152e79a06531e5ed9680e610ebf7c66190
 router.post('/person/addPerson',adminController.addPerson);
 router.post('/person/:personid/addAllergen',adminController.addAllergenToPerson);
 
