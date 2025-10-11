@@ -47,6 +47,14 @@ export const getPersonAllergens = async (req, res) => {
   });
 };
 
+export const getAllUsers = async (req,res) => {
+  const userList = await Admin.getAllUsers();
+
+  res.json({success:true,
+    userList
+  })
+};
+
 // END GETTERS
 // ADDERS
 export const addNewGroup = async (req, res) => {

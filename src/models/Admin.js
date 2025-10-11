@@ -94,6 +94,13 @@ class Admin {
     return result.rows;
   }
 
+  static async getAllUsers(){
+    const result = await pool.query(
+      `SELECT tuser.email,tuser.role FROM tuser WHERE tuser.is_active=true`
+    )
+    return result.rows;
+  }
+
   //END GETTERS
   //ADDERS
 
