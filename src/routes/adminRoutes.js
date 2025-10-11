@@ -10,26 +10,12 @@ router.use(authorizeRole("admin"));
 //GET routes
 
 router.get("/allEvents", adminController.getAllEvents);
-router.get(
-  "/event/:eventid/attendees",
-  adminController.getAllAttendeeFromEvent
-);
-router.get(
-  "/event/:eventid/countAttendees",
-  adminController.getCountOfAttendee
-);
-router.get(
-  "/event/:eventid/getAttendeeByGroup/:groupid",
-  adminController.getAttendeeByGroup
-);
-
+router.get("/event/:eventid/attendees",adminController.getAllAttendeeFromEvent);
+router.get("/event/:eventid/countAttendees",adminController.getCountOfAttendee);
+router.get("/event/:eventid/getAttendeeByGroup/:groupid",adminController.getAttendeeByGroup);
 router.get("/person/getAllPerson", adminController.getAllPerson);
-router.get(
-  "/person/:personid/getPersonAllergens",
-  adminController.getPersonAllergens
-);
-router.get("/api/user/getAllUsers", adminController.getAllUsers);
-
+router.get("/person/:personid/getPersonAllergens", adminController.getPersonAllergens);
+router.get("/user/getAllUsers", adminController.getAllUsers);
 router.get("/data/getAllergenList", adminController.getAllergenList);
 
 // POST routes
