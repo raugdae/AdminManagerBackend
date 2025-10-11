@@ -34,7 +34,14 @@ export const getAllPerson = async (req, res) => {
 
 export const getAllergenList = async (req, res) => {
   const allergenList = await Admin.getAllergenList();
-  res.json({ success: true, allergenList });
+  console.log(allergenList)
+
+  const data = allergenList.map(item => ({
+    id:item.id,
+    value:item.allergen_name
+  }))
+
+  res.json({ success: true,  data});
 };
 
 export const getPersonAllergens = async (req, res) => {
