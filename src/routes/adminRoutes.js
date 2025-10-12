@@ -17,6 +17,7 @@ router.get("/person/getAllPerson", adminController.getAllPerson);
 router.get("/person/:personid/getPersonAllergens", adminController.getPersonAllergens);
 router.get("/user/getAllUsers", adminController.getAllUsers);
 router.get("/data/getAllergenList", adminController.getAllergenList);
+router.get("/event/:eventid", adminController.getEventData)
 
 // POST routes
 router.post("/event/newEvent", adminController.newEvent);
@@ -28,10 +29,12 @@ router.post("/person/addPerson", adminController.addPerson);
 router.post("/person/:personid/addAllergen",adminController.addAllergenToPerson);
 
 //PATCH routes
-router.patch(
+router.put(
   "/event/:eventid/updateInfomaniakTicketing",
   adminController.updateInfomaniakTicketing
 );
+
+router.put('/event/:eventid/updateEvent',adminController.updateEvent);
 
 router.patch(
   "/person/:personid/updateProfile",

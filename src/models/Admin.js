@@ -101,6 +101,14 @@ class Admin {
     return result.rows;
   }
 
+  static async getEventData(eventid){
+    const result = await pool.query(
+      `
+      SELECT event_name,start_date,end_date,city,zip,street_name,street_number,shop_api_key FROM tevent WHERE active = true AND id = $1`,[eventid]
+    )
+    return result.rows[0];
+  }
+
   //END GETTERS
   //ADDERS
 
@@ -343,6 +351,21 @@ class Admin {
         shopID.id,
       ]
     );
+  }
+
+  static async updateEvent(eventid,data){
+    await pool.query(
+      `UPDATE tevent SET
+      event_name = $1,
+      start_date = $2,
+      end_date = $3,
+      street_name = $4,
+      street_number = $5,
+      city = $6,
+      zip = $7,
+      shop_api_key = $8
+      WHERE id = $9 RETURNING 1`,[data.event_name,data.start_date,data.end_date,data.street_name,data.street_number,data.city,data.zip,data.shop_api_key,eventid]
+    )
   }
 
   //DELETERS

@@ -62,6 +62,16 @@ export const getAllUsers = async (req,res) => {
   })
 };
 
+export const getEventData = async (req,res) =>{
+  const eventid = req.params.eventid
+
+  const data = await Admin.getEventData(eventid);
+
+  res.json({success:true,data})
+
+ 
+}
+
 // END GETTERS
 // ADDERS
 export const addNewGroup = async (req, res) => {
@@ -181,11 +191,7 @@ export const updatePersonAllergen = async (req, res) => {
   const personid = req.params.personid;
   const submittedAllergens = req.body.allergens;
 
-  console.log(req.body.allergens);
-
   const currentData = await Admin.getPersonAllergen(personid);
-
-  console.log(submittedAllergens);
 
   const currentAllergensID = currentData.map((row) => row.id);
 
@@ -206,7 +212,7 @@ export const updatePersonAllergen = async (req, res) => {
 export const updateInfomaniakTicketing = async (req, res) => {
   const eventid = req.params.eventid;
   const infomaniakOrderNumber = req.body.ordernumber;
-  const infomaniakToken = process.env.KEY_HYDRHALLOWEEN25;
+  const infomaniakToken = req.body.apikey;
 
   const responseInfomaniak = await fetch(
     `https://etickets.infomaniak.com/api/shop/order/${infomaniakOrderNumber}/tickets`,
@@ -276,6 +282,22 @@ export const updateInfomaniakTicketing = async (req, res) => {
 
   res.json({ status: true, message: "Got Some Shit", data: tickets });
 };
+
+export const updateEvent = async (req,res) => {
+  const eventid = req.params.eventid;
+  const data = {
+    event_name : req.body.event_name,
+    start_date : req.body.start_date,
+    end_date : req.body.end_date,
+    street_name:req.body.street_name,
+    street_number:req.body.street_number,
+    city : req.body.city,
+    zip : req.body.zip,
+    shop_api_key : req.body.shop_api_key
+  };
+  await Admin.updateEvent(eventid,data);
+}
+
 
 //DELETERS
 export const deletePersonAlergen = async (req,res) =>{
