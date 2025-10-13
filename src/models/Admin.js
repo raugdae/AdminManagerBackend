@@ -55,6 +55,13 @@ class Admin {
     return result.rows;
   }
 
+  static async countAttendeeFromGroup(groupid){
+    const result = await pool.query(
+      `SELECT id from tattendee_tgroup WHERE fk_groupid = $1`,[groupid]
+    )
+    return result.rowCount
+  }
+
   static async getAllPerson() {
     const result = await pool.query(`
             SELECT firstname,lastname,email FROM tperson WHERE is_active = true`);
@@ -107,6 +114,23 @@ class Admin {
       SELECT event_name,start_date,end_date,city,zip,street_name,street_number,shop_api_key FROM tevent WHERE active = true AND id = $1`,[eventid]
     )
     return result.rows[0];
+  }
+
+  static async getEventGroups(eventid){
+    const result = await pool.query(
+      `
+      select child.id,child.group_name AS Groupe, parent.group_name AS Parent
+      FROM tgroup AS child
+      LEFT JOIN tgroup AS parent ON child.fk_parentgroupid = parent.id WHERE child.fk_eventid = $1`,[eventid])
+
+    return result.rows
+  }
+
+  static async getGroupHaveChildren(eventid,groupid){
+    const result = await pool.query(`
+      SELECT * FROM tgroup WHERE fk_eventid = $1 AND fk_parentgroupid = $2`,[eventid,groupid])
+
+      return result.rowCount
   }
 
   //END GETTERS
@@ -379,5 +403,19 @@ class Admin {
 
     return result;
   }
+
+  static async deleteGroup(eventid,groupid){
+    const response = pool.query(`
+      DELETE FROM tgroup WHERE fk_eventid = $1 AND id = $2`,[eventid,groupid]
+    ) 
+    return response.rows
+  }
+
+
+
+  //END DELETERS
+
+
+
 }
 export default Admin;

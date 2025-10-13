@@ -72,6 +72,15 @@ export const getEventData = async (req,res) =>{
  
 }
 
+export const getEventGroups = async (req,res) =>{
+  const eventid = req.params.eventid
+
+  const data =await Admin.getEventGroups(eventid);
+
+  res.json({success:true,data})
+}
+
+
 // END GETTERS
 // ADDERS
 export const addNewGroup = async (req, res) => {
@@ -307,4 +316,26 @@ export const deletePersonAlergen = async (req,res) =>{
   await Admin.deletePersonAlergen(userid,allergenid);
 
   res.json({status:true,message:"Allergen removed"});
+}
+
+export const deleteGroup = async (req,res) =>{
+  const eventid = req.params.eventid;
+  const groupid = req.params.groupid;
+
+  const haveChildren = await Admin.getGroupHaveChildren(eventid,groupid)
+  
+
+  const haveAttendee = await Admin.countAttendeeFromGroup(groupid)
+
+  console.log("Have Children: ",haveChildren,"- Have Attendee:",haveAttendee)
+
+  if (haveChildren || haveAttendee){
+    res.status(403).json({error:'Forbidden',messgae:'Impossible de supprimer, l\'élément à des enfants'})
+    return
+  }
+
+  const response = await Admin.deleteGroup(eventid,groupid)
+
+  res.status(200).json({status:'success',message:response});
+
 }
