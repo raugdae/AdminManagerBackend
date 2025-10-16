@@ -305,7 +305,22 @@ export const updateEvent = async (req,res) => {
     shop_api_key : req.body.shop_api_key
   };
   await Admin.updateEvent(eventid,data);
+
+  res.json({status:'success',message:'Event updated'})
 }
+
+export const updateEventGroup = async (req,res) =>{
+  const eventid = req.params.eventid;
+  const groupid = req.params.groupid;
+  const updateFields = {groupe_name:req.body.groupe,fk_parentgroupid:req.body.fk_parentgroupid};
+
+  console.log(updateFields)
+
+  const response = await Admin.updateEventGroup(eventid,groupid,updateFields);
+
+  res.json({status:'success',data:response});
+}
+
 
 
 //DELETERS
@@ -339,3 +354,4 @@ export const deleteGroup = async (req,res) =>{
   res.status(200).json({status:'success',message:response});
 
 }
+

@@ -37,6 +37,8 @@ router.put(
 
 router.put('/event/:eventid/updateEvent',adminController.updateEvent);
 
+router.put('/event/:eventid/groups/:groupid/updateEventGroup',adminController.updateEventGroup)
+
 router.patch(
   "/person/:personid/updateProfile",
   adminController.updatePersonData

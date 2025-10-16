@@ -119,7 +119,7 @@ class Admin {
   static async getEventGroups(eventid){
     const result = await pool.query(
       `
-      select child.id,child.group_name AS Groupe, parent.group_name AS Parent
+      select child.id,child.group_name AS Groupe, parent.group_name AS Parent,child.fk_parentgroupid
       FROM tgroup AS child
       LEFT JOIN tgroup AS parent ON child.fk_parentgroupid = parent.id WHERE child.fk_eventid = $1`,[eventid])
 
@@ -389,6 +389,35 @@ class Admin {
       zip = $7,
       shop_api_key = $8
       WHERE id = $9 RETURNING 1`,[data.event_name,data.start_date,data.end_date,data.street_name,data.street_number,data.city,data.zip,data.shop_api_key,eventid]
+    )
+  }
+
+  static async updateEventGroup(eventid,groupid,data){
+
+    const ALLOWED_FIELDS = {
+      group_name:'groupe',
+      fk_parentgroupid:'fk_parentgroupid'
+    }
+
+    const fields = [];
+    const values = [];
+    let paramIndex =1;
+    
+    for (const [key,value] of Object.entries(data)){
+      if (ALLOWED_FIELDS[key] ){
+        fields.push(`${ALLOWED_FIELDS[key]} = $${paramIndex}`);
+        values.push(value);
+        paramIndex++;
+      }
+    }
+
+    console.log(fields);
+    
+    values.push(groupid);
+
+    const buildQuery= `UPDATE tgroup SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING *`;
+
+    await pool.query(buildQuery,values
     )
   }
 
