@@ -136,11 +136,11 @@ class Admin {
   //END GETTERS
   //ADDERS
 
-  static async addNewGroup(groupname, eventid) {
+  static async addNewGroup(eventid,groupname, parentid = null) {
     const result = await pool.query(
       `
-            INSERT INTO tgroup (group_name,fk_eventid) VALUES ($1,$2)`,
-      [groupname, eventid]
+            INSERT INTO tgroup (fk_eventid,group_name,fk_parentgroupid) VALUES ($1,$2,$3)`,
+      [eventid,groupname, parentid]
     );
     return result;
   }
@@ -394,31 +394,14 @@ class Admin {
 
   static async updateEventGroup(eventid,groupid,data){
 
-    const ALLOWED_FIELDS = {
-      group_name:'groupe',
-      fk_parentgroupid:'fk_parentgroupid'
-    }
+    console.log(groupid);
 
-    const fields = [];
-    const values = [];
-    let paramIndex =1;
-    
-    for (const [key,value] of Object.entries(data)){
-      if (ALLOWED_FIELDS[key] ){
-        fields.push(`${ALLOWED_FIELDS[key]} = $${paramIndex}`);
-        values.push(value);
-        paramIndex++;
-      }
-    }
+    const buildQuery= `UPDATE tgroup SET 
+       group_name =$1,
+       fk_parentgroupid=$2
+       WHERE id = $3 RETURNING *`;
 
-    console.log(fields);
-    
-    values.push(groupid);
-
-    const buildQuery= `UPDATE tgroup SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING *`;
-
-    await pool.query(buildQuery,values
-    )
+    await pool.query(buildQuery,[data.groupe,data.fk_parentgroupid,groupid])
   }
 
   //DELETERS

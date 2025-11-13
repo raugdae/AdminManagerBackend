@@ -86,7 +86,8 @@ export const getEventGroups = async (req,res) =>{
 export const addNewGroup = async (req, res) => {
   const eventid = req.params.eventid;
   const groupname = req.body.groupname;
-  const newgroupid = await Admin.addNewGroup(eventid, groupname);
+  const parentid = req.body.parentid;
+  const newgroupid = await Admin.addNewGroup(eventid, groupname, parentid);
   res.json({ success: true, message: "group added" });
 };
 
@@ -312,7 +313,7 @@ export const updateEvent = async (req,res) => {
 export const updateEventGroup = async (req,res) =>{
   const eventid = req.params.eventid;
   const groupid = req.params.groupid;
-  const updateFields = {groupe_name:req.body.groupe,fk_parentgroupid:req.body.fk_parentgroupid};
+  const updateFields = {groupe:req.body.groupe,fk_parentgroupid:req.body.fk_parentgroupid};
 
   console.log(updateFields)
 
