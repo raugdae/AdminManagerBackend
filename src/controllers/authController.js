@@ -60,15 +60,15 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { login, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!login || !password) {
+  if (!email || !password) {
     return res
       .status(400)
       .json({ status: false, message: "Missing user and/or password" });
   }
 
-  const user = await Auth.findByEmail(login);
+  const user = await Auth.findByEmail(email);
 
   if (!user) {
     return res
@@ -81,7 +81,7 @@ export const login = async (req, res) => {
       .status(403)
       .json({
         status: false,
-        message: "User Account disabled, please contact and administrator",
+        message: "User Account disabled, please contact an administrator",
       });
   }
 

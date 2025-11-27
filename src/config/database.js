@@ -13,7 +13,7 @@ const pool = new Pool({
   database: process.env.DB_NAME
 });
 
-console.log(process.env.DB_PASSWORD);
+
 
 pool.connect((err, client, release) =>{
     if (err){
