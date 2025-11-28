@@ -346,9 +346,9 @@ export const deleteGroup = async (req,res) =>{
   console.log("Have Children: ",haveChildren,"- Have Attendee:",haveAttendee)
 
   if (haveChildren || haveAttendee){
-    res.status(403).json({error:'Forbidden',message:'Impossible de supprimer, l\'élément à des enfants'})
-    return
-  }
+    
+    return res.status(403).json({error:'Forbidden',message:'Impossible de supprimer, l\'élément à des enfants'})
+    }
 
   const response = await Admin.deleteGroup(eventid,groupid)
 
