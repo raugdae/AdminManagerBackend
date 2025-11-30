@@ -14,11 +14,16 @@ router.get("/event/:eventid/attendees",adminController.getAllAttendeeFromEvent);
 router.get("/event/:eventid/countAttendees",adminController.getCountOfAttendee);
 router.get("/event/:eventid/getAttendeeByGroup/:groupid",adminController.getAttendeeByGroup);
 router.get("/event/:eventid/getGroups", adminController.getEventGroups)
+router.get("/event/:eventid", adminController.getEventData)
+
 router.get("/person/getAllPerson", adminController.getAllPerson);
 router.get("/person/:personid/getPersonAllergens", adminController.getPersonAllergens);
+router.get("/person/:personid/getPersonDetail",adminController.getPersonDetail)
+
 router.get("/user/getAllUsers", adminController.getAllUsers);
+
 router.get("/data/getAllergenList", adminController.getAllergenList);
-router.get("/event/:eventid", adminController.getEventData)
+
 
 // POST routes
 router.post("/event/newEvent", adminController.newEvent);

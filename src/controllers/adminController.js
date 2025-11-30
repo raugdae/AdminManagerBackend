@@ -32,10 +32,14 @@ export const getAllPerson = async (req, res) => {
   res.json({ success: true, personlist });
 };
 
+export const getPersonDetail = async (req,res) => {
+  const personid = req.params.personid
+  const persondetail = await Admin.getPersonDetail(personid);
+  res.json({success:true, persondetail});
+}
+
 export const getAllergenList = async (req, res) => {
   const allergenList = await Admin.getAllergenList();
-  console.log(allergenList)
-
   const data = allergenList.map(item => ({
     id:item.id,
     value:item.allergen_name
@@ -127,15 +131,15 @@ export const addAttendeeToGroup = async (req, res) => {
 
 export const addPerson = async (req, res) => {
   const data = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    iceName: req.body.iceName,
-    iceDescription: req.body.iceDescription,
-    iceNumber: req.body.iceNumber,
+    firstName: req.body.firstname,
+    lastName: req.body.lastname,
+    iceName: req.body.emergency_contact_name,
+    iceDescription: req.body.emergency_contact_description,
+    iceNumber: req.body.emergency_contact_number,
     city: req.body.city,
     zip: req.body.zip,
-    strtName: req.body.streetName,
-    strtNr: req.body.streetNumber,
+    strtName: req.body.street_name,
+    strtNr: req.body.street_number,
     email: req.body.email,
     health: req.body.health,
     birthdate: req.body.birthdate,
@@ -177,20 +181,23 @@ export const addAllergenToPerson = async (req, res) => {
 
 //PUTTERS
 export const updatePersonData = async (req, res) => {
+
+  console.log("receieved data:",req.body);
+
   const data = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    iceName: req.body.iceName,
-    iceDescription: req.body.iceDescription,
-    iceNumber: req.body.iceNumber,
+    firstName: req.body.firstname,
+    lastName: req.body.lastname,
+    iceName: req.body.emergency_contact_name,
+    iceDescription: req.body.emergency_contact_description,
+    iceNumber: req.body.emergency_contact_number,
     city: req.body.city,
     zip: req.body.zip,
-    strtName: req.body.streetName,
-    strtNr: req.body.streetNumber,
+    strtName: req.body.street_name,
+    strtNr: req.body.street_number,
     email: req.body.email,
-    health: req.body.health,
+    health: req.body.health_condition,
     birthdate: req.body.birthdate,
-    isVegetarian: req.body.isVegetarian,
+    isVegetarian: req.body.isvegetarian,
   };
   const personid = req.params.personid;
   const updatedPerson = await Admin.updatePersonData(personid, data);
@@ -199,23 +206,26 @@ export const updatePersonData = async (req, res) => {
 
 export const updatePersonAllergen = async (req, res) => {
   const personid = req.params.personid;
-  const submittedAllergens = req.body.allergens;
-
+  const submittedAllergens = req.body.allergenlist;
+  
   const currentData = await Admin.getPersonAllergen(personid);
-
   const currentAllergensID = currentData.map((row) => row.id);
-
+  
+  
   for (const allergen of submittedAllergens) {
-    const existsInDb = currentAllergensID.includes(allergen.id);
-
-    if (allergen.isSelected && !existsInDb) {
+    if (!currentAllergensID.includes(allergen.id)) {
       await Admin.addAllergenToPerson(personid, allergen.id);
     }
-    if (!allergen.isSelected && existsInDb) {
-      await Admin.deletePersonAlergen(personid, allergen.id);
+  }
+  
+  
+  const submittedIDs = submittedAllergens.map(a => a.id);
+  for (const currentId of currentAllergensID) {
+    if (!submittedIDs.includes(currentId)) {
+      await Admin.deletePersonAlergen(personid, currentId);
     }
   }
-
+  
   res.json({ status: true, message: "Allergen list updated" });
 };
 

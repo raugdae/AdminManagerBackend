@@ -55,16 +55,17 @@ class Admin {
     return result.rows;
   }
 
-  static async countAttendeeFromGroup(groupid){
+  static async countAttendeeFromGroup(groupid) {
     const result = await pool.query(
-      `SELECT id from tattendee_tgroup WHERE fk_groupid = $1`,[groupid]
-    )
-    return result.rowCount
+      `SELECT id from tattendee_tgroup WHERE fk_groupid = $1`,
+      [groupid]
+    );
+    return result.rowCount;
   }
 
   static async getAllPerson() {
     const result = await pool.query(`
-            SELECT firstname,lastname,email FROM tperson WHERE is_active = true`);
+            SELECT id,firstname,lastname,email FROM tperson WHERE is_active = true`);
     return result.rows;
   }
   static async getPerson(firstname, lastname) {
@@ -72,6 +73,15 @@ class Admin {
       `
             SELECT firstname,lastname FROM tperson WHERE firstname = $1 AND lastname = $2`,
       [firstname, lastname]
+    );
+    return result.rows[0];
+  }
+
+  static async getPersonDetail(personid) {
+    const result = await pool.query(
+      `SELECT id,firstname,lastname,emergency_contact_name,emergency_contact_description,emergency_contact_number,city,zip,street_name,street_number,email,health_condition,birthdate,isvegetarian from tperson WHERE id = $1
+`,
+      [personid]
     );
     return result.rows[0];
   }
@@ -87,7 +97,7 @@ class Admin {
             SELECT tallergen.id,tallergen.allergen_name
             FROM tperson_tallergen
             LEFT JOIN tallergen ON tallergen.id = tperson_tallergen.fk_allergenid
-            `);
+            WHERE tperson_tallergen.fk_personid = $1`,[personid]);
     return result.rows;
   }
 
@@ -101,46 +111,52 @@ class Admin {
     return result.rows;
   }
 
-  static async getAllUsers(){
+  static async getAllUsers() {
     const result = await pool.query(
       `SELECT tuser.email,tuser.role FROM tuser WHERE tuser.is_active=true`
-    )
+    );
     return result.rows;
   }
 
-  static async getEventData(eventid){
+  static async getEventData(eventid) {
     const result = await pool.query(
       `
-      SELECT event_name,start_date,end_date,city,zip,street_name,street_number,shop_api_key FROM tevent WHERE active = true AND id = $1`,[eventid]
-    )
+      SELECT event_name,start_date,end_date,city,zip,street_name,street_number,shop_api_key FROM tevent WHERE active = true AND id = $1`,
+      [eventid]
+    );
     return result.rows[0];
   }
 
-  static async getEventGroups(eventid){
+  static async getEventGroups(eventid) {
     const result = await pool.query(
       `
       select child.id,child.group_name AS Groupe, parent.group_name AS Parent,child.fk_parentgroupid
       FROM tgroup AS child
-      LEFT JOIN tgroup AS parent ON child.fk_parentgroupid = parent.id WHERE child.fk_eventid = $1`,[eventid])
+      LEFT JOIN tgroup AS parent ON child.fk_parentgroupid = parent.id WHERE child.fk_eventid = $1`,
+      [eventid]
+    );
 
-    return result.rows
+    return result.rows;
   }
 
-  static async getGroupHaveChildren(eventid,groupid){
-    const result = await pool.query(`
-      SELECT * FROM tgroup WHERE fk_eventid = $1 AND fk_parentgroupid = $2`,[eventid,groupid])
+  static async getGroupHaveChildren(eventid, groupid) {
+    const result = await pool.query(
+      `
+      SELECT * FROM tgroup WHERE fk_eventid = $1 AND fk_parentgroupid = $2`,
+      [eventid, groupid]
+    );
 
-      return result.rowCount
+    return result.rowCount;
   }
 
   //END GETTERS
   //ADDERS
 
-  static async addNewGroup(eventid,groupname, parentid = null) {
+  static async addNewGroup(eventid, groupname, parentid = null) {
     const result = await pool.query(
       `
             INSERT INTO tgroup (fk_eventid,group_name,fk_parentgroupid) VALUES ($1,$2,$3)`,
-      [eventid,groupname, parentid]
+      [eventid, groupname, parentid]
     );
     return result;
   }
@@ -377,7 +393,7 @@ class Admin {
     );
   }
 
-  static async updateEvent(eventid,data){
+  static async updateEvent(eventid, data) {
     await pool.query(
       `UPDATE tevent SET
       event_name = $1,
@@ -388,20 +404,30 @@ class Admin {
       city = $6,
       zip = $7,
       shop_api_key = $8
-      WHERE id = $9 RETURNING 1`,[data.event_name,data.start_date,data.end_date,data.street_name,data.street_number,data.city,data.zip,data.shop_api_key,eventid]
-    )
+      WHERE id = $9 RETURNING 1`,
+      [
+        data.event_name,
+        data.start_date,
+        data.end_date,
+        data.street_name,
+        data.street_number,
+        data.city,
+        data.zip,
+        data.shop_api_key,
+        eventid,
+      ]
+    );
   }
 
-  static async updateEventGroup(eventid,groupid,data){
-
+  static async updateEventGroup(eventid, groupid, data) {
     console.log(groupid);
 
-    const buildQuery= `UPDATE tgroup SET 
+    const buildQuery = `UPDATE tgroup SET 
        group_name =$1,
        fk_parentgroupid=$2
        WHERE id = $3 RETURNING *`;
 
-    await pool.query(buildQuery,[data.groupe,data.fk_parentgroupid,groupid])
+    await pool.query(buildQuery, [data.groupe, data.fk_parentgroupid, groupid]);
   }
 
   //DELETERS
@@ -416,18 +442,15 @@ class Admin {
     return result;
   }
 
-  static async deleteGroup(eventid,groupid){
-    const response = pool.query(`
-      DELETE FROM tgroup WHERE fk_eventid = $1 AND id = $2`,[eventid,groupid]
-    ) 
-    return response.rows
+  static async deleteGroup(eventid, groupid) {
+    const response = pool.query(
+      `
+      DELETE FROM tgroup WHERE fk_eventid = $1 AND id = $2`,
+      [eventid, groupid]
+    );
+    return response.rows;
   }
 
-
-
   //END DELETERS
-
-
-
 }
 export default Admin;
