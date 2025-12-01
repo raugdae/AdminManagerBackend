@@ -130,20 +130,23 @@ export const addAttendeeToGroup = async (req, res) => {
 };
 
 export const addPerson = async (req, res) => {
+
+  console.log(req.body)
+
   const data = {
-    firstName: req.body.firstname,
-    lastName: req.body.lastname,
-    iceName: req.body.emergency_contact_name,
-    iceDescription: req.body.emergency_contact_description,
-    iceNumber: req.body.emergency_contact_number,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    emergency_contact_name: req.body.emergency_contact_name,
+    emergency_contact_description: req.body.emergency_contact_description,
+    emergency_contact_number: req.body.emergency_contact_number,
     city: req.body.city,
     zip: req.body.zip,
-    strtName: req.body.street_name,
-    strtNr: req.body.street_number,
+    street_name: req.body.street_name,
+    street_number: req.body.street_number,
     email: req.body.email,
-    health: req.body.health,
+    health_condition: req.body.health_condition,
     birthdate: req.body.birthdate,
-    isVegetarian: req.body.isVegetarian,
+    isvegetarian: req.body.isvegetarian,
   };
 
   const personExists = await Admin.getPerson(data.firstName, data.lastName);
@@ -364,5 +367,12 @@ export const deleteGroup = async (req,res) =>{
 
   res.status(200).json({status:'success',message:response});
 
+}
+
+export const deletePerson = async (req,res) => {
+  const personid = req.params.personid;
+  console.log(personid);
+  const response = await Admin.deletePerson(personid);
+  res.status(200).json({status:'succes',message:response});
 }
 

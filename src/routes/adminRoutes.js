@@ -58,6 +58,10 @@ router.delete(
   adminController.deletePersonAlergen
 );
 router.delete(
+  "/person/:personid/DeletePerson",
+  adminController.deletePerson
+)
+router.delete(
   "/event/:eventid/groups/deleteGroup/:groupid", adminController.deleteGroup);
 
 

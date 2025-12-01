@@ -227,19 +227,19 @@ class Admin {
             ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
             RETURNING firstname,lastname,id`,
       [
-        data.firstName,
-        data.lastName,
-        data.iceName,
-        data.iceDescription,
-        data.iceNumber,
+        data.firstname,
+        data.lastname,
+        data.emergency_contact_name,
+        data.emergency_contact_description,
+        data.emergency_contact_number,
         data.city,
         data.zip,
-        data.strtName,
-        data.strtNr,
+        data.street_name,
+        data.street_number,
         data.email,
-        data.health,
+        data.health_condition,
         data.birthdate,
-        data.isVegetarian,
+        data.isvegetarian,
       ]
     );
 
@@ -449,6 +449,13 @@ class Admin {
       [eventid, groupid]
     );
     return response.rows;
+  }
+
+  static async deletePerson(personid){
+    const response = pool.query(
+      `DELETE FROM tperson WHERE id = $1`,[personid]
+    );
+    return response
   }
 
   //END DELETERS
