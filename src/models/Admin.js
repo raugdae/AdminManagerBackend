@@ -14,11 +14,12 @@ class Admin {
 
   static async getAllAttendeeFromEvent(eventid) {
     const result = await pool.query(
-      `SELECT tperson.firstname,tperson.lastname,tgroup.group_name FROM tattendee 
-                                            LEFT JOIN tperson ON tattendee.fk_personid = tperson.id
-                                            LEFT JOIN tgroup ON tattendee.fk_groupid = tgroup.id
-                                            LEFT JOIN tevent ON tgroup.fk_eventid = tevent.id 
-                                            WHERE tevent.id = $1`,
+      `SELECT tperson.firstname,tperson.lastname FROM tattendee_tgroup 
+      JOIN tgroup ON tattendee_tgroup.fk_groupid = tgroup.id
+      JOIN tevent ON tgroup.fk_eventid = tevent.id
+      JOIN tattendee ON tattendee_tgroup.fk_attendeeid = tattendee.id
+	  JOIN tperson ON tattendee.fk_personid = tperson.id
+	  WHERE tevent.id =  $1`,
       [eventid]
     );
 
@@ -93,11 +94,14 @@ class Admin {
   }
 
   static async getPersonAllergen(personid) {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
             SELECT tallergen.id,tallergen.allergen_name
             FROM tperson_tallergen
             LEFT JOIN tallergen ON tallergen.id = tperson_tallergen.fk_allergenid
-            WHERE tperson_tallergen.fk_personid = $1`,[personid]);
+            WHERE tperson_tallergen.fk_personid = $1`,
+      [personid]
+    );
     return result.rows;
   }
 
@@ -205,6 +209,16 @@ class Admin {
       }
       throw error;
     }
+  }
+
+  static async addEventAttendee(data) {
+    try{
+      const result = await pool.query(`
+        INSRT INTO tattendee (fk_personid,fk_eventid) VALUES ($1,$2)`,[data.personid,data.eventid])
+        return result.rows[0];
+    }catch (error){throw error}
+    
+    
   }
 
   static async addPerson(data) {
@@ -451,11 +465,11 @@ class Admin {
     return response.rows;
   }
 
-  static async deletePerson(personid){
-    const response = pool.query(
-      `DELETE FROM tperson WHERE id = $1`,[personid]
-    );
-    return response
+  static async deletePerson(personid) {
+    const response = pool.query(`DELETE FROM tperson WHERE id = $1`, [
+      personid,
+    ]);
+    return response;
   }
 
   //END DELETERS

@@ -9,8 +9,8 @@ export const getAllEvents = async (req, res) => {
 
 export const getAllAttendeeFromEvent = async (req, res) => {
   const eventid = req.params.eventid;
-  const listAttendee = await Admin.getAllAttendeeFromEvent(eventid);
-  res.json({ success: true, count: listAttendee.length, data: listAttendee });
+  const data = await Admin.getAllAttendeeFromEvent(eventid);
+  res.json({ success: true, data});
 };
 
 export const getCountOfAttendee = async (req, res) => {
@@ -85,6 +85,8 @@ export const getEventGroups = async (req,res) =>{
 }
 
 
+
+
 // END GETTERS
 // ADDERS
 export const addNewGroup = async (req, res) => {
@@ -94,6 +96,8 @@ export const addNewGroup = async (req, res) => {
   const newgroupid = await Admin.addNewGroup(eventid, groupname, parentid);
   res.json({ success: true, message: "group added" });
 };
+
+
 
 export const addNewChildGroup = async (req, res) => {
   const childGroupData = req.body;
@@ -128,6 +132,15 @@ export const addAttendeeToGroup = async (req, res) => {
     res.json({ success: true, message: "Attendee added to group" });
   }
 };
+
+export const addEventAttendee = async (req,res) => {
+  const data = req.body;
+  
+  const response = await Admin.addEventAttendee(data);
+  res.json(response);
+
+}
+
 
 export const addPerson = async (req, res) => {
 

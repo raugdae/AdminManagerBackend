@@ -16,6 +16,7 @@ router.get("/event/:eventid/getAttendeeByGroup/:groupid",adminController.getAtte
 router.get("/event/:eventid/getGroups", adminController.getEventGroups)
 router.get("/event/:eventid", adminController.getEventData)
 
+
 router.get("/person/getAllPerson", adminController.getAllPerson);
 router.get("/person/:personid/getPersonAllergens", adminController.getPersonAllergens);
 router.get("/person/:personid/getPersonDetail",adminController.getPersonDetail)
@@ -31,6 +32,7 @@ router.post("/event/:eventid/addgroup", adminController.addNewGroup);
 router.post("/event/:eventid/addChildGroup/", adminController.addNewChildGroup);
 router.post("/group/addUser", adminController.addAttendeeToGroup);
 router.post("/group/addAttendee", adminController.addAttendeeToGroup);
+router.post("/event/:eventid/addAttendee", adminController.addEventAttendee);
 router.post("/person/addPerson", adminController.addPerson);
 router.post("/person/:personid/addAllergen",adminController.addAllergenToPerson);
 
