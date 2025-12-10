@@ -202,6 +202,8 @@ export const updatePersonData = async (req, res) => {
     birthdate: req.body.birthdate,
     isVegetarian: req.body.isvegetarian,
   };
+
+  console.log(data);
   const personid = req.params.personid;
   const updatedPerson = await Admin.updatePersonData(personid, data);
   res.json({ success: true, message: "user edited successfully" });
