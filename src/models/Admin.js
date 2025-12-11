@@ -19,7 +19,7 @@ class Admin {
       JOIN tevent ON tgroup.fk_eventid = tevent.id
       JOIN tattendee ON tattendee_tgroup.fk_attendeeid = tattendee.id
 	  JOIN tperson ON tattendee.fk_personid = tperson.id
-	  WHERE tevent.id =  $1`,
+	  WHERE tevent.id =  $1 GROUP BY tperson.id`,
       [eventid]
     );
 
