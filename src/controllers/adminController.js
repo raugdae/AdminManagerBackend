@@ -10,7 +10,7 @@ export const getAllEvents = async (req, res) => {
 export const getAllAttendeeFromEvent = async (req, res) => {
   const eventid = req.params.eventid;
   const data = await Admin.getAllAttendeeFromEvent(eventid);
-  res.json({ success: true, data});
+  res.json({ success: true, data });
 };
 
 export const getCountOfAttendee = async (req, res) => {
@@ -32,20 +32,20 @@ export const getAllPerson = async (req, res) => {
   res.json({ success: true, personlist });
 };
 
-export const getPersonDetail = async (req,res) => {
-  const personid = req.params.personid
+export const getPersonDetail = async (req, res) => {
+  const personid = req.params.personid;
   const persondetail = await Admin.getPersonDetail(personid);
-  res.json({success:true, persondetail});
-}
+  res.json({ success: true, persondetail });
+};
 
 export const getAllergenList = async (req, res) => {
   const allergenList = await Admin.getAllergenList();
-  const data = allergenList.map(item => ({
-    id:item.id,
-    value:item.allergen_name
-  }))
+  const data = allergenList.map((item) => ({
+    id: item.id,
+    value: item.allergen_name,
+  }));
 
-  res.json({ success: true,  data});
+  res.json({ success: true, data });
 };
 
 export const getPersonAllergens = async (req, res) => {
@@ -58,34 +58,36 @@ export const getPersonAllergens = async (req, res) => {
   });
 };
 
-export const getAllUsers = async (req,res) => {
+export const getAllUsers = async (req, res) => {
   const userList = await Admin.getAllUsers();
 
-  res.json({success:true,
-    userList
-  })
+  res.json({ success: true, userList });
 };
 
-export const getEventData = async (req,res) =>{
-  const eventid = req.params.eventid
+export const getEventData = async (req, res) => {
+  const eventid = req.params.eventid;
 
   const data = await Admin.getEventData(eventid);
 
-  res.json({success:true,data})
+  res.json({ success: true, data });
+};
 
- 
-}
+export const getEventGroups = async (req, res) => {
+  const eventid = req.params.eventid;
 
-export const getEventGroups = async (req,res) =>{
-  const eventid = req.params.eventid
+  const data = await Admin.getEventGroups(eventid);
 
-  const data =await Admin.getEventGroups(eventid);
+  res.json({ success: true, data });
+};
 
-  res.json({success:true,data})
-}
+export const getAttendeeGroups = async (req, res) => {
+  const eventid = req.params.eventid;
+  const attendeeid = req.params.attendeeid;
 
+  const data = await Admin.getAttendeeGroups(eventid, attendeeid);
 
-
+  res.json({ success: true, data });
+};
 
 // END GETTERS
 // ADDERS
@@ -96,8 +98,6 @@ export const addNewGroup = async (req, res) => {
   const newgroupid = await Admin.addNewGroup(eventid, groupname, parentid);
   res.json({ success: true, message: "group added" });
 };
-
-
 
 export const addNewChildGroup = async (req, res) => {
   const childGroupData = req.body;
@@ -133,18 +133,15 @@ export const addAttendeeToGroup = async (req, res) => {
   }
 };
 
-export const addEventAttendee = async (req,res) => {
+export const addEventAttendee = async (req, res) => {
   const data = req.body;
-  
+
   const response = await Admin.addEventAttendee(data);
   res.json(response);
-
-}
-
+};
 
 export const addPerson = async (req, res) => {
-
-  console.log(req.body)
+  console.log(req.body);
 
   const data = {
     firstname: req.body.firstname,
@@ -162,7 +159,7 @@ export const addPerson = async (req, res) => {
     isvegetarian: req.body.isvegetarian,
   };
 
-  const personExists = await Admin.getPerson(data.firstName, data.lastName);
+  const personExists = await Admin.getPerson(data.firstname, data.lastname);
 
   console.log(personExists);
 
@@ -171,16 +168,17 @@ export const addPerson = async (req, res) => {
       success: false,
       message: "A person with this firstname and lastname already exist",
     });
+  } else {
+    const addedPerson = await Admin.addPerson(data);
+    res.json({ success: true, message: "User Added", addedPerson });
   }
-  const addedPerson = await Admin.addPerson(data);
-  res.json({ success: true, message: "User Added", addedPerson });
 };
 
 export const addAllergenToPerson = async (req, res) => {
   const allergens = req.body.allergen;
   const personid = req.params.personid;
 
-  const results = await Promise.all(
+  if(personid){const results = await Promise.all(
     allergens.map((allergenid) =>
       Admin.addAllergenToPerson(personid, allergenid)
     )
@@ -192,13 +190,16 @@ export const addAllergenToPerson = async (req, res) => {
     }
   }
   res.json({ success: true, message: "Allergen registred", results });
+}
+else{
+  res.json({success: false,message:"Missing personUUID"});
+}
 };
 //END ADDERS
 
 //PUTTERS
 export const updatePersonData = async (req, res) => {
-
-  console.log("receieved data:",req.body);
+  console.log("receieved data:", req.body);
 
   const data = {
     firstName: req.body.firstname,
@@ -223,28 +224,32 @@ export const updatePersonData = async (req, res) => {
 };
 
 export const updatePersonAllergen = async (req, res) => {
-  const personid = req.params.personid;
+  const personid = req.params.personid | null;
   const submittedAllergens = req.body.allergenlist;
-  
+  console.log('personid',personid);
+  if (personid){
+
   const currentData = await Admin.getPersonAllergen(personid);
   const currentAllergensID = currentData.map((row) => row.id);
-  
-  
+
   for (const allergen of submittedAllergens) {
     if (!currentAllergensID.includes(allergen.id)) {
       await Admin.addAllergenToPerson(personid, allergen.id);
     }
   }
-  
-  
-  const submittedIDs = submittedAllergens.map(a => a.id);
+
+  const submittedIDs = submittedAllergens.map((a) => a.id);
   for (const currentId of currentAllergensID) {
     if (!submittedIDs.includes(currentId)) {
       await Admin.deletePersonAlergen(personid, currentId);
     }
   }
-  
+
   res.json({ status: true, message: "Allergen list updated" });
+  }
+  else{
+    res.json({status: false,message:"person UUID is missing"});
+  }
 };
 
 export const updateInfomaniakTicketing = async (req, res) => {
@@ -280,7 +285,7 @@ export const updateInfomaniakTicketing = async (req, res) => {
         payementstatus: ticket.status,
         category: ticket.category_name,
         amount: ticket.amount,
-        ordernumber: req.body.ordernumber
+        ordernumber: req.body.ordernumber,
       };
       const shopID = await Admin.insertTicket(eventid, ticketData);
 
@@ -300,11 +305,11 @@ export const updateInfomaniakTicketing = async (req, res) => {
         payementstatus: ticket.status,
         category: ticket.category_name,
         amount: ticket.amount,
-        ordernumber: req.body.ordernumber
+        ordernumber: req.body.ordernumber,
       };
 
       const shopID = await Admin.updateTicket(ticketData);
-      
+
       for (const survey of ticket.surveys) {
         for (const field of survey.fields) {
           const surveyData = {
@@ -321,73 +326,80 @@ export const updateInfomaniakTicketing = async (req, res) => {
   res.json({ status: true, message: "Got Some Shit", data: tickets });
 };
 
-export const updateEvent = async (req,res) => {
+export const updateEvent = async (req, res) => {
   const eventid = req.params.eventid;
   const data = {
-    event_name : req.body.event_name,
-    start_date : req.body.start_date,
-    end_date : req.body.end_date,
-    street_name:req.body.street_name,
-    street_number:req.body.street_number,
-    city : req.body.city,
-    zip : req.body.zip,
-    shop_api_key : req.body.shop_api_key
+    event_name: req.body.event_name,
+    start_date: req.body.start_date,
+    end_date: req.body.end_date,
+    street_name: req.body.street_name,
+    street_number: req.body.street_number,
+    city: req.body.city,
+    zip: req.body.zip,
+    shop_api_key: req.body.shop_api_key,
   };
-  await Admin.updateEvent(eventid,data);
+  await Admin.updateEvent(eventid, data);
 
-  res.json({status:'success',message:'Event updated'})
-}
+  res.json({ status: "success", message: "Event updated" });
+};
 
-export const updateEventGroup = async (req,res) =>{
+export const updateEventGroup = async (req, res) => {
   const eventid = req.params.eventid;
   const groupid = req.params.groupid;
-  const updateFields = {groupe:req.body.groupe,fk_parentgroupid:req.body.fk_parentgroupid};
+  const updateFields = {
+    groupe: req.body.groupe,
+    fk_parentgroupid: req.body.fk_parentgroupid,
+  };
 
-  console.log(updateFields)
+  console.log(updateFields);
 
-  const response = await Admin.updateEventGroup(eventid,groupid,updateFields);
+  const response = await Admin.updateEventGroup(eventid, groupid, updateFields);
 
-  res.json({status:'success',data:response});
-}
-
-
+  res.json({ status: "success", data: response });
+};
 
 //DELETERS
-export const deletePersonAlergen = async (req,res) =>{
+export const deletePersonAlergen = async (req, res) => {
   const userid = req.params.userid;
   const allergenid = req.body.allergendid;
 
-  await Admin.deletePersonAlergen(userid,allergenid);
+  await Admin.deletePersonAlergen(userid, allergenid);
 
-  res.json({status:true,message:"Allergen removed"});
-}
+  res.json({ status: true, message: "Allergen removed" });
+};
 
-export const deleteGroup = async (req,res) =>{
+export const deleteGroup = async (req, res) => {
   const eventid = req.params.eventid;
   const groupid = req.params.groupid;
 
-  const haveChildren = await Admin.getGroupHaveChildren(eventid,groupid)
-  
+  const haveChildren = await Admin.getGroupHaveChildren(eventid, groupid);
 
-  const haveAttendee = await Admin.countAttendeeFromGroup(groupid)
+  const haveAttendee = await Admin.countAttendeeFromGroup(groupid);
 
-  console.log("Have Children: ",haveChildren,"- Have Attendee:",haveAttendee)
+  console.log(
+    "Have Children: ",
+    haveChildren,
+    "- Have Attendee:",
+    haveAttendee
+  );
 
-  if (haveChildren || haveAttendee){
-    
-    return res.status(403).json({error:'Forbidden',message:'Impossible de supprimer, l\'élément à des enfants'})
-    }
+  if (haveChildren || haveAttendee) {
+    return res
+      .status(403)
+      .json({
+        error: "Forbidden",
+        message: "Impossible de supprimer, l'élément à des enfants",
+      });
+  }
 
-  const response = await Admin.deleteGroup(eventid,groupid)
+  const response = await Admin.deleteGroup(eventid, groupid);
 
-  res.status(200).json({status:'success',message:response});
+  res.status(200).json({ status: "success", message: response });
+};
 
-}
-
-export const deletePerson = async (req,res) => {
+export const deletePerson = async (req, res) => {
   const personid = req.params.personid;
   console.log(personid);
   const response = await Admin.deletePerson(personid);
-  res.status(200).json({status:'succes',message:response});
-}
-
+  res.status(200).json({ status: "succes", message: response });
+};
