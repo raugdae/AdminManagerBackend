@@ -14,7 +14,7 @@ class Admin {
 
   static async getAllAttendeeFromEvent(eventid) {
     const result = await pool.query(
-      `SELECT tperson.firstname,tperson.lastname FROM tattendee_tgroup 
+      `SELECT tperson.firstname,tperson.lastname,tperson.id FROM tattendee_tgroup 
       JOIN tgroup ON tattendee_tgroup.fk_groupid = tgroup.id
       JOIN tevent ON tgroup.fk_eventid = tevent.id
       JOIN tattendee ON tattendee_tgroup.fk_attendeeid = tattendee.id
