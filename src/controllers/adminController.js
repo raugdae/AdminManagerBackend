@@ -403,3 +403,11 @@ export const deletePerson = async (req, res) => {
   const response = await Admin.deletePerson(personid);
   res.status(200).json({ status: "succes", message: response });
 };
+
+export const removeAttendee = async (req,res) => {
+
+  const attendeeid = req.params.attendeeid;
+  const response = await Admin.removeAttendee(attendeeid);
+  
+  res.status(200).json({status:"success",message : response});
+}

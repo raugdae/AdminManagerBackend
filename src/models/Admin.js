@@ -14,12 +14,9 @@ class Admin {
 
   static async getAllAttendeeFromEvent(eventid) {
     const result = await pool.query(
-      `SELECT tperson.firstname,tperson.lastname,tperson.id FROM tattendee_tgroup 
-      JOIN tgroup ON tattendee_tgroup.fk_groupid = tgroup.id
-      JOIN tevent ON tgroup.fk_eventid = tevent.id
-      JOIN tattendee ON tattendee_tgroup.fk_attendeeid = tattendee.id
+      `SELECT tperson.firstname,tperson.lastname,tperson.id AS personid,tattendee.id AS attendeeid FROM tattendee 
 	  JOIN tperson ON tattendee.fk_personid = tperson.id
-	  WHERE tevent.id =  $1 GROUP BY tperson.id`,
+	  WHERE tattendee.fk_eventid =  $1`,
       [eventid]
     );
 
@@ -221,9 +218,10 @@ class Admin {
   }
 
   static async addEventAttendee(data) {
+    console.log("newAttendee:", data)
     try{
       const result = await pool.query(`
-        INSRT INTO tattendee (fk_personid,fk_eventid) VALUES ($1,$2)`,[data.personid,data.eventid])
+        INSERT INTO tattendee (fk_personid,fk_eventid) VALUES ($1,$2)`,[data.personid,data.eventid])
         return result.rows[0];
     }catch (error){throw error}
     
@@ -478,6 +476,11 @@ class Admin {
     const response = pool.query(`DELETE FROM tperson WHERE id = $1`, [
       personid,
     ]);
+    return response;
+  }
+
+  static async removeAttendee(attendeeid){
+    const response = await pool.query('DELETE FROM tattendee WHERE id = $1',[attendeeid])
     return response;
   }
 
