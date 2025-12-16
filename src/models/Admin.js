@@ -150,12 +150,13 @@ class Admin {
     return result.rowCount;
   }
 
-  static async getAttendeeGroups(eventid, personid) {
+  static async getAttendeeGroups(eventid, attendeeid) {
+
     const result = await pool.query (`
       SELECT tgroup.group_name, tgroup.id from tattendee_tgroup 
       JOIN tgroup ON tattendee_tgroup.fk_groupid = tgroup.id 
       JOIN tattendee ON tattendee_tgroup.fk_attendeeid = tattendee.id
-      WHERE tattendee.fk_personid = $1 and tgroup.fk_eventid = $2`,[personid,eventid])
+      WHERE tattendee.id = $1 and tgroup.fk_eventid = $2`,[attendeeid,eventid])
       return result.rows
   }
 
