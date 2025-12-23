@@ -411,3 +411,14 @@ export const removeAttendee = async (req,res) => {
   
   res.status(200).json({status:"success",message : response});
 }
+
+export const deleteAttendeeGroup = async (req,res) => {
+  const recordid = req.params.id;
+  const response = await Admin.deleteAttendeeGroup(recordid)
+  if (response.length === 0) {
+    res.status(200).json({status:"success",message : 'No record found'});
+  } else{
+    res.status(200).json({status:"success",message:response})
+  }
+
+}

@@ -29,50 +29,28 @@ router.get("/data/getAllergenList", adminController.getAllergenList);
 router.post("/event/newEvent", adminController.newEvent);
 router.post("/event/:eventid/addgroup", adminController.addNewGroup);
 router.post("/event/:eventid/addChildGroup/", adminController.addNewChildGroup);
+router.post("/event/:eventid/addAttendee", adminController.addEventAttendee);
+
 router.post("/group/addUser", adminController.addAttendeeToGroup);
 router.post("/group/addAttendee", adminController.addAttendeeToGroup);
-router.post("/event/:eventid/addAttendee", adminController.addEventAttendee);
+
 router.post("/person/addPerson", adminController.addPerson);
-router.post(
-  "/person/:personid/addAllergen",
-  adminController.addAllergenToPerson
-);
+router.post("/person/:personid/addAllergen", adminController.addAllergenToPerson);
 
 //PATCH routes
-router.put(
-  "/event/:eventid/updateInfomaniakTicketing",
-  adminController.updateInfomaniakTicketing
-);
-
+router.put("/event/:eventid/updateInfomaniakTicketing", adminController.updateInfomaniakTicketing);
 router.put("/event/:eventid/updateEvent", adminController.updateEvent);
-router.put(
-  "/event/:eventid/groups/:groupid/updateEventGroup",
-  adminController.updateEventGroup
-);
+router.put("/event/:eventid/groups/:groupid/updateEventGroup", adminController.updateEventGroup);
 
-router.patch(
-  "/person/:personid/updateProfile",
-  adminController.updatePersonData
-);
-router.patch(
-  "/person/:personid/updateAllergen",
-  adminController.updatePersonAllergen
-);
+router.patch("/person/:personid/updateProfile", adminController.updatePersonData);
+router.patch("/person/:personid/updateAllergen", adminController.updatePersonAllergen);
 
 //DELETE routes
-router.delete(
-  "/person/:personid/removeAllergen",
-  adminController.deletePersonAlergen
-);
+router.delete("/person/:personid/removeAllergen", adminController.deletePersonAlergen);
 router.delete("/person/:personid/DeletePerson", adminController.deletePerson);
-router.delete(
-  "/event/:eventid/groups/deleteGroup/:groupid",
-  adminController.deleteGroup
-);
+router.delete("/event/:eventid/groups/deleteGroup/:groupid", adminController.deleteGroup);
 
-router.delete(
-  "/event/:eventid/attendee/:attendeeid/removeAttendee",
-  adminController.removeAttendee
-);
+router.delete("/event/:eventid/attendee/:attendeeid/removeAttendee", adminController.removeAttendee);
+router.delete("/group/deleteAttendeeGroup/:id",adminController.deleteAttendeeGroup);
 
 export default router;

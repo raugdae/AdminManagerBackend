@@ -153,7 +153,7 @@ class Admin {
   static async getAttendeeGroups(eventid, attendeeid) {
 
     const result = await pool.query (`
-      SELECT tgroup.group_name, tgroup.id from tattendee_tgroup 
+      SELECT tgroup.group_name, tgroup.id,tattendee_tgroup.id as id from tattendee_tgroup 
       JOIN tgroup ON tattendee_tgroup.fk_groupid = tgroup.id 
       JOIN tattendee ON tattendee_tgroup.fk_attendeeid = tattendee.id
       WHERE tattendee.id = $1 and tgroup.fk_eventid = $2`,[attendeeid,eventid])
@@ -482,6 +482,11 @@ class Admin {
 
   static async removeAttendee(attendeeid){
     const response = await pool.query('DELETE FROM tattendee WHERE id = $1',[attendeeid])
+    return response;
+  }
+
+  static async deleteAttendeeGroup(recordid){
+    const response = await pool.query('DELETE FROM tattendee_tgroup WHERE id = $1',[recordid])
     return response;
   }
 
