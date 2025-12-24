@@ -17,6 +17,8 @@ router.get("/event/:eventid/getGroups", adminController.getEventGroups);
 router.get("/event/:eventid", adminController.getEventData);
 router.get("/event/:eventid/attendee/:attendeeid/getGroups", adminController.getAttendeeGroups);
 
+router.get("/event/:eventid/dashboard",adminController.getDashboardData)
+
 router.get("/person/getAllPerson", adminController.getAllPerson);
 router.get("/person/:personid/getPersonAllergens", adminController.getPersonAllergens);
 router.get("/person/:personid/getPersonDetail", adminController.getPersonDetail);

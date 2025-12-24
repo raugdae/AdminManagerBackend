@@ -150,6 +150,14 @@ class Admin {
     return result.rowCount;
   }
 
+  static async getChildrenGroups(eventid,parentGroupId) {
+    const result = await pool.query(`
+      SELECT group_name,id FROM tgroup WHERE fk_eventid = $1 AND fk_parentgroupid = $2
+      `,[eventid,parentGroupId]);
+
+      return result.rows;
+  }
+
   static async getAttendeeGroups(eventid, attendeeid) {
 
     const result = await pool.query (`

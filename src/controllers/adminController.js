@@ -89,6 +89,45 @@ export const getAttendeeGroups = async (req, res) => {
   res.json({ success: true, data });
 };
 
+export const getDirectChildrenGroups = async (eventid,parentGroupId) => {
+
+  const childrenGroupList = await Admin.getChildrenGroups(eventid,parentGroupId);
+  console.log(childrenGrouplist)
+
+
+  return childrenGroupList
+
+
+};
+
+
+export const getDashboardData = async (req,res) => {
+
+    const eventid = req.params.eventid
+
+    const groupList = await Admin.getEventGroups(eventid);
+
+    const resultGroupWithChild = await Promise.all(groupList.map(async(group) => {
+      const result = await Admin.getGroupHaveChildren(eventid,group.id);
+      return result > 0?group:null
+    }));
+
+    const groupWithChildList = resultGroupWithChild.filter(Boolean)
+
+
+    const attendeeCountproGroup = await Promise.all(groupList.map( async (group) => {
+      const result = await Admin.countAttendeeFromGroup(group.id)
+      return {groupid:group.id,groupe:group.groupe,attendees:result}
+    }))
+
+    
+
+    console.log(attendeeCountproGroup);
+
+    res.json({success:true,groupList,groupWithChildList,attendeeCountproGroup})
+
+}
+
 // END GETTERS
 // ADDERS
 export const addNewGroup = async (req, res) => {
