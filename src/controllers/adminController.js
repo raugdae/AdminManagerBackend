@@ -96,9 +96,16 @@ export const getDirectChildrenGroups = async (eventid,parentGroupId) => {
 
 
   return childrenGroupList
-
-
 };
+
+export const getApiKey = async (req,res) => {
+  const eventid = req.params.eventid;
+  
+  const response = await Admin.getApiKey(eventid);
+  console.log(response);
+
+  return res.json({success:true,apiKey:response.shop_api_key});
+}
 
 
 export const getDashboardData = async (req,res) => {
@@ -234,6 +241,21 @@ else{
   res.json({success: false,message:"Missing personUUID"});
 }
 };
+
+export const addTicketToAttendee = async (req,res) => {
+  const attendeeid = req.body.attendeeid;
+  const ticketnumber = req.body.ticketnumber;
+
+  try {
+    console.log("data recieved",attendeeid, " - ",ticketnumber)
+    const response = Admin.addTicketToAttendee(attendeeid,ticketnumber)
+    res.json({success:true,message:response})
+  }catch (err){
+    res.json({success:false,message:response})
+  }
+}
+
+
 //END ADDERS
 
 //PUTTERS
@@ -314,6 +336,8 @@ export const updateInfomaniakTicketing = async (req, res) => {
 
   const tickets = await responseInfomaniak.json();
 
+  console.log(tickets);
+
   for (const ticket of tickets) {
     console.log("ticketimport:", ticket.barcode);
     const alreadyImported = listExistingTickets.includes(ticket.barcode);
@@ -362,7 +386,7 @@ export const updateInfomaniakTicketing = async (req, res) => {
     }
   }
 
-  res.json({ status: true, message: "Got Some Shit", data: tickets });
+  res.json({ status: true, message: "Got Some Shit", tickets: tickets });
 };
 
 export const updateEvent = async (req, res) => {

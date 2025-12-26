@@ -168,6 +168,14 @@ class Admin {
       return result.rows
   }
 
+  static async getApiKey(eventid){
+
+    const result = await pool.query (`
+      SELECT shop_api_key FROM tevent WHERE id = $1 LIMIT 1`,[eventid])
+
+    return result.rows[0];
+  }
+
   //END GETTERS
   //ADDERS
 
@@ -349,6 +357,8 @@ class Admin {
     return result.rows;
   }
 
+  
+
   //UPDATERS
 
   static async updatePersonData(personid, data) {
@@ -458,6 +468,14 @@ class Admin {
        WHERE id = $3 RETURNING *`;
 
     await pool.query(buildQuery, [data.groupe, data.fk_parentgroupid, groupid]);
+  }
+
+  static async addTicketToAttendee(attendeeid,ticketnumber){
+    const result = await pool.query(`
+      UPDATE tshop SET fk_attendeeid = $1 WHERE ticket_code = $2
+      `,[attendeeid,ticketnumber])
+
+      return result;
   }
 
   //DELETERS

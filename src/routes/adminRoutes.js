@@ -16,8 +16,8 @@ router.get("/event/:eventid/getAttendeeByGroup/:groupid", adminController.getAtt
 router.get("/event/:eventid/getGroups", adminController.getEventGroups);
 router.get("/event/:eventid", adminController.getEventData);
 router.get("/event/:eventid/attendee/:attendeeid/getGroups", adminController.getAttendeeGroups);
-
-router.get("/event/:eventid/dashboard",adminController.getDashboardData)
+router.get("/event/:eventid/dashboard",adminController.getDashboardData);
+router.get("/event/:eventid/getShopKey",adminController.getApiKey);
 
 router.get("/person/getAllPerson", adminController.getAllPerson);
 router.get("/person/:personid/getPersonAllergens", adminController.getPersonAllergens);
@@ -36,6 +36,8 @@ router.post("/event/:eventid/addAttendee", adminController.addEventAttendee);
 router.post("/group/addUser", adminController.addAttendeeToGroup);
 router.post("/group/addAttendee", adminController.addAttendeeToGroup);
 
+
+
 router.post("/person/addPerson", adminController.addPerson);
 router.post("/person/:personid/addAllergen", adminController.addAllergenToPerson);
 
@@ -46,6 +48,8 @@ router.put("/event/:eventid/groups/:groupid/updateEventGroup", adminController.u
 
 router.patch("/person/:personid/updateProfile", adminController.updatePersonData);
 router.patch("/person/:personid/updateAllergen", adminController.updatePersonAllergen);
+
+router.patch("/attendee/assignTicket",adminController.addTicketToAttendee);
 
 //DELETE routes
 router.delete("/person/:personid/removeAllergen", adminController.deletePersonAlergen);
