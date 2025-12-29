@@ -17,7 +17,11 @@ router.get("/event/:eventid/getGroups", adminController.getEventGroups);
 router.get("/event/:eventid", adminController.getEventData);
 router.get("/event/:eventid/attendee/:attendeeid/getGroups", adminController.getAttendeeGroups);
 router.get("/event/:eventid/dashboard",adminController.getDashboardData);
-router.get("/event/:eventid/getShopKey",adminController.getApiKey);
+router.get("/event/:eventid/getUnassignedTicket",adminController.getEventUnassignedTicket);
+
+router.get("/event/ticket/:ticketid/getSurvey",adminController.getTicketSurvey)
+
+router.get("/event/:eventid/attendee/:attendeeid/getTicket",adminController.getAttendeeTicket)
 
 router.get("/person/getAllPerson", adminController.getAllPerson);
 router.get("/person/:personid/getPersonAllergens", adminController.getPersonAllergens);

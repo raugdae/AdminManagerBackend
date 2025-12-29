@@ -176,6 +176,28 @@ class Admin {
     return result.rows[0];
   }
 
+  static async getAttendeeTicket(eventid,attendeeid) {
+
+    const result = await pool.query(`
+      SELECT id,ticket_code,payement_state FROM tshop WHERE fk_eventid = $1 AND fk_attendeeid = $2`,[eventid,attendeeid])
+      return result.rows;
+  }
+
+  static async getUnassignedTicket(eventid){
+
+    const result = await pool.query(`
+      SELECT id,ticket_code,fk_eventid FROM tshop WHERE fk_eventid = $1 AND fk_attendeeid IS NULL`,[eventid]);
+      return result.rows;
+  }
+
+  static async getTicketSurvey(ticketid){
+    //console.log('ticketid:',ticketid);
+    const result = await pool.query(`
+      SELECT field_name,field_value FROM tshopsurvey WHERE fk_shopid = $1`,[ticketid])
+
+      return result.rows
+  }
+
   //END GETTERS
   //ADDERS
 
@@ -474,7 +496,7 @@ class Admin {
     const result = await pool.query(`
       UPDATE tshop SET fk_attendeeid = $1 WHERE ticket_code = $2
       `,[attendeeid,ticketnumber])
-
+      console.log(result);
       return result;
   }
 

@@ -92,19 +92,15 @@ export const getAttendeeGroups = async (req, res) => {
 export const getDirectChildrenGroups = async (eventid,parentGroupId) => {
 
   const childrenGroupList = await Admin.getChildrenGroups(eventid,parentGroupId);
-  console.log(childrenGrouplist)
 
 
   return childrenGroupList
 };
 
-export const getApiKey = async (req,res) => {
-  const eventid = req.params.eventid;
-  
+export const getApiKey = async (eventid) => {
+ 
   const response = await Admin.getApiKey(eventid);
-  console.log(response);
-
-  return res.json({success:true,apiKey:response.shop_api_key});
+  return response.shop_api_key;
 }
 
 
@@ -127,12 +123,36 @@ export const getDashboardData = async (req,res) => {
       return {groupid:group.id,groupe:group.groupe,attendees:result}
     }))
 
-    
-
-    console.log(attendeeCountproGroup);
-
     res.json({success:true,groupList,groupWithChildList,attendeeCountproGroup})
 
+}
+
+export const getAttendeeTicket = async (req,res) => {
+  const eventid = req.params.eventid;
+  const attendeeid = req.params.attendeeid;
+
+  const result = await Admin.getAttendeeTicket(eventid,attendeeid);
+
+  res.json({success:true,result});
+
+}
+
+export const getEventUnassignedTicket = async (req,res) => {
+  const eventid = req.params.eventid;
+
+  const result = await Admin.getUnassignedTicket(eventid);
+
+  console.log("unassigned ticket",result);
+
+  res.json({succes:true,result})
+
+}
+
+export const getTicketSurvey = async (req,res) => {
+  const ticketid = req.params.ticketid;
+
+  const result = await Admin.getTicketSurvey(ticketid);
+  res.json({success:true,result});
 }
 
 // END GETTERS
@@ -316,7 +336,7 @@ export const updatePersonAllergen = async (req, res) => {
 export const updateInfomaniakTicketing = async (req, res) => {
   const eventid = req.params.eventid;
   const infomaniakOrderNumber = req.body.ordernumber;
-  const infomaniakToken = req.body.apikey;
+  const infomaniakToken = await getApiKey(eventid);;
 
   const responseInfomaniak = await fetch(
     `https://etickets.infomaniak.com/api/shop/order/${infomaniakOrderNumber}/tickets`,
@@ -324,11 +344,8 @@ export const updateInfomaniakTicketing = async (req, res) => {
   );
   const responseDB = await Admin.getAllTickets(eventid);
 
-  console.log(responseDB);
 
   const listExistingTickets = responseDB.map((row) => row.ticket_code);
-
-  console.log(listExistingTickets);
 
   if (!responseInfomaniak.ok) {
     res.json({ status: false, message: "Error fetching data from Infomaniak" });
@@ -336,10 +353,7 @@ export const updateInfomaniakTicketing = async (req, res) => {
 
   const tickets = await responseInfomaniak.json();
 
-  console.log(tickets);
-
   for (const ticket of tickets) {
-    console.log("ticketimport:", ticket.barcode);
     const alreadyImported = listExistingTickets.includes(ticket.barcode);
 
     if (!alreadyImported) {
@@ -386,7 +400,7 @@ export const updateInfomaniakTicketing = async (req, res) => {
     }
   }
 
-  res.json({ status: true, message: "Got Some Shit", tickets: tickets });
+  res.json({ status: true, message: "ticket loaded"});
 };
 
 export const updateEvent = async (req, res) => {
